@@ -3,6 +3,8 @@
 
 #include "stm32f7xx.h"
 
+#define FLASH_LATENCY_7  ((uint32_t)0x00000007U)
+
 typedef enum {
   HAL_OK       = 0x00U,
   HAL_ERROR    = 0x01U,
@@ -13,5 +15,9 @@ typedef enum {
 HAL_StatusTypeDef HAL_Init(void);
 void HAL_GPIO_Init(void *GPIOx, void *GPIO_Init);
 void HAL_Delay(uint32_t Delay);
+
+// Добавляем заглушки для настройки частоты процессора дрона
+void HAL_RCC_OscConfig(void *RCC_OscInitStruct);
+void HAL_RCC_ClockConfig(void *RCC_ClkInitStruct, uint32_t FLatency);
 
 #endif

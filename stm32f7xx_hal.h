@@ -9,6 +9,11 @@
 #define RCC_HCLK_DIV4            ((uint32_t)0x00009000U)
 #define RCC_SYSCLKSOURCE_PLLCLK  ((uint32_t)0x00000002U)
 
+#define RCC_CLOCKTYPE_SYSCLK     ((uint32_t)0x00000001U)
+#define RCC_CLOCKTYPE_HCLK       ((uint32_t)0x00000002U)
+#define RCC_CLOCKTYPE_PCLK1      ((uint32_t)0x00000004U)
+#define RCC_CLOCKTYPE_PCLK2      ((uint32_t)0x00000008U)
+
 typedef enum {
   HAL_OK       = 0x00U,
   HAL_ERROR    = 0x01U,

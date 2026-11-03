@@ -4,6 +4,7 @@
 #include "stm32f7xx.h"
 
 #define FLASH_LATENCY_7  ((uint32_t)0x00000007U)
+#define RCC_HCLK_DIV2    ((uint32_t)0x00008000U)
 
 typedef enum {
   HAL_OK       = 0x00U,
@@ -12,12 +13,30 @@ typedef enum {
   HAL_TIMEOUT  = 0x03U
 } HAL_StatusTypeDef;
 
+// Объявляем базовые типы структур для настройки частоты тактования Mamba
+typedef struct {
+  uint32_t OscillatorType;
+  uint32_t HSEState;
+  uint32_t LSEState;
+  uint32_t HSIState;
+  uint32_t HSICalibrationValue;
+  uint32_t LSIState;
+  void*    PLL; 
+} RCC_OscInitTypeDef;
+
+typedef struct {
+  uint32_t ClockType;
+  uint32_t SYSCLKSource;
+  uint32_t AHBCLKDivider;
+  uint32_t APB1CLKDivider;
+  uint32_t APB2CLKDivider;
+} RCC_ClkInitTypeDef;
+
 HAL_StatusTypeDef HAL_Init(void);
 void HAL_GPIO_Init(void *GPIOx, void *GPIO_Init);
 void HAL_Delay(uint32_t Delay);
 
-// Добавляем заглушки для настройки частоты процессора дрона
-void HAL_RCC_OscConfig(void *RCC_OscInitStruct);
-void HAL_RCC_ClockConfig(void *RCC_ClkInitStruct, uint32_t FLatency);
+void HAL_RCC_OscConfig(RCC_OscInitTypeDef *RCC_OscInitStruct);
+void HAL_RCC_ClockConfig(RCC_ClkInitTypeDef *RCC_ClkInitStruct, uint32_t FLatency);
 
 #endif

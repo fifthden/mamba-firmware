@@ -35,7 +35,7 @@
 #define COMP1                                ((void *)0x40010000)
 #define DAC                                  ((void *)0x40007400)
 
-// 3. Константы Таймеров, Компаратора и ЦАП
+// 3. Константы Таймеров, Компаратора, ЦАП и GPIO
 #define TIM_ICPSC_DIV1                       ((uint32_t)0x00000000U)
 #define TIM_CHANNEL_1                        ((uint32_t)0x00000000U)
 #define TIM_CLOCKDIVISION_DIV1               ((uint32_t)0x00000000U)
@@ -44,9 +44,9 @@
 #define TIM_ICSELECTION_DIRECTTI             ((uint32_t)0x00000001U)
 #define TIM_COUNTERMODE_UP                   ((uint32_t)0x00000000U)
 
-#define COMP_MODE_HIGHSPEED                  ((uint32_t)0x0000000CU)
+#define COMP_MODE_HIGHSPEED                  ((uint32_t)0x00000000U)
 #define COMP_OUTPUTPOL_NONINVERTED           ((uint32_t)0x00000000U)
-#define COMP_HYSTERESIS_MEDIUM               ((uint32_t)0x00000002U)
+#define COMP_HYSTERESIS_MEDIUM               ((uint32_t)0x00000000U)
 #define COMP_BLANKINGSR_NONE                 ((uint32_t)0x00000000U)
 #define COMP_INPUT_MINUS_DAC1_CH1            ((uint32_t)0x00000000U)
 #define COMP_INPUT_PLUS_IO1                  ((uint32_t)0x00000000U)
@@ -57,6 +57,16 @@
 #define DAC_TRIGGER_NONE                     ((uint32_t)0x00000000U)
 #define DAC_OUTPUTBUFFER_ENABLE              ((uint32_t)0x00000000U)
 
+#define GPIO_MODE_INPUT                      ((uint32_t)0x00000000U)
+#define GPIO_MODE_OUTPUT_PP                  ((uint32_t)0x00000001U)
+#define GPIO_MODE_AF_PP                      ((uint32_t)0x00000002U)
+#define GPIO_MODE_ANALOG                     ((uint32_t)0x00000003U)
+#define GPIO_NOPULL                          ((uint32_t)0x00000000U)
+#define GPIO_PULLUP                          ((uint32_t)0x00000001U)
+#define GPIO_PULLDOWN                        ((uint32_t)0x00000002U)
+#define GPIO_SPEED_FREQ_LOW                  ((uint32_t)0x00000000U)
+#define GPIO_SPEED_FREQ_VERY_HIGH            ((uint32_t)0x00000003U)
+
 typedef enum {
   HAL_OK       = 0x00U,
   HAL_ERROR    = 0x01U,
@@ -64,7 +74,7 @@ typedef enum {
   HAL_TIMEOUT  = 0x03U
 } HAL_StatusTypeDef;
 
-// 4. Структуры данных (Частота, Таймеры, Компаратор, ЦАП)
+// 4. Структуры данных
 typedef struct {
   uint32_t PLLState; uint32_t PLLSource; uint32_t PLLM; uint32_t PLLN; uint32_t PLLP; uint32_t PLLQ;
 } RCC_PLLInitTypeDef;
@@ -97,7 +107,6 @@ typedef struct {
   void* Instance; COMP_InitTypeDef Init;
 } COMP_HandleTypeDef;
 
-// Исправленные имена полей для структуры ЦАП дрона
 typedef struct {
   uint32_t DAC_Trigger; 
   uint32_t DAC_OutputBuffer;
@@ -107,10 +116,18 @@ typedef struct {
   void* Instance;
 } DAC_HandleTypeDef;
 
-// 5. Все функции HAL
+typedef struct {
+  uint32_t Pin;
+  uint32_t Mode;
+  uint32_t Pull;
+  uint32_t Speed;
+  uint32_t Alternate;
+} GPIO_InitTypeDef;
+
+// 5. Все функции HAL и управления прерываниями (NVIC)
 HAL_StatusTypeDef HAL_Init(void);
 void HAL_Delay(uint32_t Delay);
-void HAL_GPIO_Init(void *GPIOx, void *GPIO_Init);
+void HAL_GPIO_Init(void *GPIOx, GPIO_InitTypeDef *GPIO_Init);
 
 void HAL_RCC_OscConfig(RCC_OscInitTypeDef *RCC_OscInitStruct);
 void HAL_RCC_ClockConfig(RCC_ClkInitTypeDef *RCC_ClkInitStruct, uint32_t FLatency);
@@ -127,5 +144,8 @@ HAL_StatusTypeDef HAL_DAC_Init(DAC_HandleTypeDef *hdac);
 HAL_StatusTypeDef HAL_DAC_ConfigChannel(DAC_HandleTypeDef *hdac, DAC_ChannelConfTypeDef *sConfig, uint32_t Channel);
 HAL_StatusTypeDef HAL_DAC_SetValue(DAC_HandleTypeDef *hdac, uint32_t Channel, uint32_t Alignment, uint32_t Data);
 HAL_StatusTypeDef HAL_DAC_Start(DAC_HandleTypeDef *hdac, uint32_t Channel);
+
+void HAL_NVIC_SetPriority(int32_t IRQn, uint32_t PreemptPriority, uint32_t SubPriority);
+void HAL_NVIC_EnableIRQ(int32_t IRQn);
 
 #endif

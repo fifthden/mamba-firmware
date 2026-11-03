@@ -10,15 +10,25 @@ jobs:
       - name: Install ARM Toolchain
         run: |
           sudo apt-get update
-          sudo apt-get install -y gcc-arm-none-eabi cmake
+          sudo apt-get install -y gcc-arm-none-eabi
+
+      - name: Clone STM32CubeF7 Drivers
+        run: |
+          # Скачиваем официальные файлы HAL библиотек STM32F7
+          git clone --depth 1 https://github.com stm32_hal
 
       - name: Build Code
         run: |
-          # Компилируем исходный код
-          arm-none-eabi-gcc -c -mcpu=cortex-m7 -mthumb -O2 main.c -o main.o
+          # Компилируем ваш main.c с указанием путей к скачанным HAL драйверам
+          arm-none-eabi-gcc -c -mcpu=cortex-m7 -mthumb -O2 \
+            -I./stm32_hal/Drivers/STM32F7xx_HAL_Driver/Inc \
+            -I./stm32_hal/Drivers/CMSIS/Device/ST/STM32F7xx/Include \
+            -I./stm32_hal/Drivers/CMSIS/Include \
+            -DSTM32F722xx \
+            main.c -o main.o
           
-          # Линкуем со смещением вектора под Betaflight (0x0800C000)
-          arm-none-eabi-gcc main.o -mcpu=cortex-m7 -mthumb -specs=nano.specs -Ttext=0x0800C000 -Wl,-Map=output.map -o firmware.elf
+          # Линкуем со смещением вектора под загрузчик Betaflight (0x0800C000)
+          arm-none-eabi-gcc main.o -mcpu=cortex-m7 -mthumb -specs=nano.specs -Ttext=0x0800C000 -o firmware.elf
           
           # Конвертируем в итоговый бинарник .bin
           arm-none-eabi-objcopy -O binary firmware.elf firmware.bin

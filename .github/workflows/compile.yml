@@ -12,34 +12,18 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y gcc-arm-none-eabi
 
-      - name: Download STM32 Drivers
-        run: |
-          # Скачиваем только заголовочные файлы HAL и регистры F7
-          mkdir -p inc
-          curl -sSL https://githubusercontent.com -o inc/stm32f7xx_hal.h
-          curl -sSL https://githubusercontent.com -o inc/stm32f7xx.h
-          curl -sSL https://githubusercontent.com -o inc/stm32f722xx.h
-          curl -sSL https://githubusercontent.com -o inc/core_cm7.h
-          curl -sSL https://githubusercontent.com -o inc/cmsis_version.h
-          curl -sSL https://githubusercontent.com -o inc/cmsis_compiler.h
-          curl -sSL https://githubusercontent.com -o inc/cmsis_gcc.h
-          
-          # Заглушка конфигурации HAL
-          echo "#define STM32F722xx" > inc/stm32f7xx_hal_conf.h
-          echo "#include \"stm32f722xx.h\"" >> inc/stm32f7xx_hal_conf.h
-
       - name: Build Firmware
         run: |
-          # Вытаскиваем main.c обратно в корень, если он лежал в папке src
+          # Возвращаем main.c в корень, если он застрял в папке src
           mv src/main.c ./main.c || true
           
-          # Компиляция под Cortex-M7
-          arm-none-eabi-gcc -c -mcpu=cortex-m7 -mthumb -O2 -I./inc -DSTM32F722xx main.c -o main.o
+          # Компиляция локальных файлов без скачивания из интернета
+          arm-none-eabi-gcc -c -mcpu=cortex-m7 -mthumb -O2 -I. -DSTM32F722xx main.c -o main.o
           
-          # Линковка со смещением под Betaflight
+          # Линковка со смещением памяти под Betaflight Loader
           arm-none-eabi-gcc main.o -mcpu=cortex-m7 -mthumb -specs=nano.specs -Ttext=0x0800C000 -o firmware.elf
           
-          # Создание бинарника
+          # Вывод готового .bin файла
           arm-none-eabi-objcopy -O binary firmware.elf firmware.bin
 
       - name: Upload Binary Artifact

@@ -29,9 +29,10 @@
 #define TIM_ICPSC_DIV1                       ((uint32_t)0x00000000U)
 #define TIM_CHANNEL_1                        ((uint32_t)0x00000000U)
 #define TIM_CLOCKDIVISION_DIV1               ((uint32_t)0x00000000U)
-#define TIM_CLOCKREVISION_DIV1               ((uint32_t)0x00000000U) // На случай опечатки в коде
+#define TIM_CLOCKREVISION_DIV1               ((uint32_t)0x00000000U) 
 #define TIM_INPUTCHANNELPOLARITY_FALLING     ((uint32_t)0x00000002U)
 #define TIM_ICSELECTION_DIRECTTI             ((uint32_t)0x00000001U)
+#define TIM_COUNTERMODE_UP                   ((uint32_t)0x00000000U)
 
 typedef enum {
   HAL_OK       = 0x00U,
@@ -74,6 +75,22 @@ typedef struct {
   uint32_t ICFilter;
 } TIM_IC_InitTypeDef;
 
+// Объявляем внутреннюю структуру инициализации базового таймера
+typedef struct {
+  uint32_t Prescaler;
+  uint32_t CounterMode;
+  uint32_t Period;
+  uint32_t ClockDivision;
+  uint32_t RepetitionCounter;
+  uint32_t AutoReloadPreload;
+} TIM_Base_InitTypeDef;
+
+// Объявляем главный тип хэндла таймераhtim2
+typedef struct {
+  void*                 Instance;
+  TIM_Base_InitTypeDef  Init;
+} TIM_HandleTypeDef;
+
 HAL_StatusTypeDef HAL_Init(void);
 void HAL_GPIO_Init(void *GPIOx, void *GPIO_Init);
 void HAL_Delay(uint32_t Delay);
@@ -82,8 +99,7 @@ void HAL_RCC_OscConfig(RCC_OscInitTypeDef *RCC_OscInitStruct);
 void HAL_RCC_ClockConfig(RCC_ClkInitTypeDef *RCC_ClkInitStruct, uint32_t FLatency);
 HAL_StatusTypeDef HAL_PWREx_EnableOverDrive(void);
 
-// Функции для работы с аппаратными таймерами
-HAL_StatusTypeDef HAL_TIM_IC_Init(void *htim);
-HAL_StatusTypeDef HAL_TIM_IC_ConfigChannel(void *htim, TIM_IC_InitTypeDef *sConfig, uint32_t Channel);
+HAL_StatusTypeDef HAL_TIM_IC_Init(TIM_HandleTypeDef *htim);
+HAL_StatusTypeDef HAL_TIM_IC_ConfigChannel(TIM_HandleTypeDef *htim, TIM_IC_InitTypeDef *sConfig, uint32_t Channel);
 
 #endif

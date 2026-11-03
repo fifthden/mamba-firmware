@@ -27,4 +27,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: mamba_vgr_firmware
-          path: .pio/build/genericSTM32F722RE/firmware.bin
+          path: .pio/build/mamba_f722/firmware.bin

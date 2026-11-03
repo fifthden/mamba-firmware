@@ -36,7 +36,7 @@
 #define __HAL_RCC_TIM2_CLK_ENABLE()          do { } while(0)
 #define TIM2                                 ((void *)0x40000000)
 
-// Настройки встроенного компаратора платы Mamba
+// Настройки встроенного компаратора
 #define COMP1                                ((void *)0x40010000)
 #define COMP_MODE_HIGHSPEED                  ((uint32_t)0x0000000CU)
 #define COMP_OUTPUTPOL_NONINVERTED           ((uint32_t)0x00000000U)
@@ -45,6 +45,10 @@
 #define COMP_INPUT_MINUS_DAC1_CH1            ((uint32_t)0x00000000U)
 #define COMP_INPUT_PLUS_IO1                  ((uint32_t)0x00000000U)
 #define COMP_OUTPUT_TIM2_IC1                 ((uint32_t)0x00000000U)
+#define __HAL_RCC_COMP_CLK_ENABLE()          do { } while(0)
+
+// Настройки ЦАП (DAC)
+#define DAC_CHANNEL_1                        ((uint32_t)0x00000000U)
 
 typedef enum {
   HAL_OK       = 0x00U,
@@ -118,6 +122,16 @@ typedef struct {
   COMP_InitTypeDef  Init;
 } COMP_HandleTypeDef;
 
+// Структуры для ЦАП
+typedef struct {
+  uint32_t Trigger;
+  uint32_t OutputBuffer;
+} DAC_ConfTypeName; 
+
+typedef struct {
+  void* Instance;
+} DAC_HandleTypeDef;
+
 HAL_StatusTypeDef HAL_Init(void);
 void HAL_GPIO_Init(void *GPIOx, void *GPIO_Init);
 void HAL_Delay(uint32_t Delay);
@@ -127,8 +141,12 @@ void HAL_RCC_ClockConfig(RCC_ClkInitTypeDef *RCC_ClkInitStruct, uint32_t FLatenc
 HAL_StatusTypeDef HAL_PWREx_EnableOverDrive(void);
 
 HAL_StatusTypeDef HAL_TIM_IC_Init(TIM_HandleTypeDef *htim);
+HAL_StatusTypeDef Charl(TIM_HandleTypeDef *htim, TIM_IC_InitTypeDef *sConfig, uint32_t Channel);
 HAL_StatusTypeDef HAL_TIM_IC_ConfigChannel(TIM_HandleTypeDef *htim, TIM_IC_InitTypeDef *sConfig, uint32_t Channel);
 
 HAL_StatusTypeDef HAL_COMP_Init(COMP_HandleTypeDef *hcomp);
+
+// Функции ЦАП
+HAL_StatusTypeDef HAL_DAC_ConfigChannel(DAC_HandleTypeDef *hdac, void *sConfig, uint32_t Channel);
 
 #endif

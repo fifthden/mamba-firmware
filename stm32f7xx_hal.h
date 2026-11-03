@@ -14,12 +14,24 @@
 #define RCC_CLOCKTYPE_PCLK1      ((uint32_t)0x00000004U)
 #define RCC_CLOCKTYPE_PCLK2      ((uint32_t)0x00000008U)
 
+#define RCC_PLLP_DIV2            ((uint32_t)0x00000002U)
+
 typedef enum {
   HAL_OK       = 0x00U,
   HAL_ERROR    = 0x01U,
   HAL_BUSY     = 0x02U,
   HAL_TIMEOUT  = 0x03U
 } HAL_StatusTypeDef;
+
+// Детализируем внутреннюю структуру PLL процессора
+typedef struct {
+  uint32_t PLLState;
+  uint32_t PLLSource;
+  uint32_t PLLM;
+  uint32_t PLLN;
+  uint32_t PLLP;
+  uint32_t PLLQ;
+} RCC_PLLInitTypeDef;
 
 typedef struct {
   uint32_t OscillatorType;
@@ -28,7 +40,7 @@ typedef struct {
   uint32_t HSIState;
   uint32_t HSICalibrationValue;
   uint32_t LSIState;
-  void*    PLL; 
+  RCC_PLLInitTypeDef PLL; 
 } RCC_OscInitTypeDef;
 
 typedef struct {
@@ -45,5 +57,8 @@ void HAL_Delay(uint32_t Delay);
 
 void HAL_RCC_OscConfig(RCC_OscInitTypeDef *RCC_OscInitStruct);
 void HAL_RCC_ClockConfig(RCC_ClkInitTypeDef *RCC_ClkInitStruct, uint32_t FLatency);
+
+// Добавляем функцию разгона питания микроконтроллера дрона
+HAL_StatusTypeDef HAL_PWREx_EnableOverDrive(void);
 
 #endif

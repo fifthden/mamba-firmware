@@ -7,36 +7,24 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Install ARM Toolchain
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y gcc-arm-none-eabi
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
 
-      - name: Download Minimal HAL Drivers
+      - name: Install PlatformIO
         run: |
-          # Скачиваем только критически важные заголовочные файлы для компиляции
-          mkdir -p inc
-          curl -sSL https://githubusercontent.com -o inc/stm32f7xx_hal.h
-          curl -sSL https://githubusercontent.com -o inc/stm32f7xx.h
-          curl -sSL https://githubusercontent.com -o inc/mamba_chip.h
-          
-          # Создаем пустой файл конфигурации, чтобы заглушить проверки компилятора
-          echo "#define STM32F722xx" > inc/stm32f7xx_hal_conf.h
-          echo "" >> inc/stm32f7xx_hal_conf.h
+          python -m pip install --upgrade pip
+          pip install platformio
 
-      - name: Build Code
+      - name: Build Firmware
         run: |
-          # Компилируем ваш main.c с подключением скачанных файлов
-          arm-none-eabi-gcc -c -mcpu=cortex-m7 -mthumb -O2 -I./inc -DSTM32F722xx main.c -o main.o
-          
-          # Линкуем со смещением вектора под загрузчик Betaflight (0x0800C000)
-          arm-none-eabi-gcc main.o -mcpu=cortex-m7 -mthumb -specs=nano.specs -Ttext=0x0800C000 -o firmware.elf
-          
-          # Конвертируем в итоговый бинарник .bin
-          arm-none-eabi-objcopy -O binary firmware.elf firmware.bin
+          mkdir -p src
+          mv main.c src/main.c || true
+          pio run
 
       - name: Upload Binary Artifact
         uses: actions/upload-artifact@v4
         with:
           name: mamba_vgr_firmware
-          path: firmware.bin
+          path: .pio/build/genericSTM32F722RET6/firmware.bin

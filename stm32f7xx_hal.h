@@ -3,7 +3,7 @@
 
 #include "stm32f7xx.h"
 
-// 1. Системные макросы и тактирование
+// 1. Системные макросы, тактирование и питание процессора дрона
 #define FLASH_LATENCY_7          ((uint32_t)0x00000007U)
 #define RCC_SYSCLK_DIV1          ((uint32_t)0x00000000U)
 #define RCC_HCLK_DIV2            ((uint32_t)0x00008000U)
@@ -29,13 +29,17 @@
 #define __HAL_RCC_GPIOA_CLK_ENABLE()         do { } while(0)
 #define __HAL_RCC_GPIOB_CLK_ENABLE()         do { } while(0)
 #define __HAL_RCC_GPIOC_CLK_ENABLE()         do { } while(0)
+#define __HAL_RCC_TIM2_CLK_DISABLE()         do { } while(0)
+#define __HAL_RCC_COMP_CLK_DISABLE()         do { } while(0)
+#define __HAL_RCC_DAC_CLK_DISABLE()          do { } while(0)
 
-// 2. Базовые адреса железа
+// 2. Базовые адреса периферии
 #define TIM2                                 ((void *)0x40000000)
 #define COMP1                                ((void *)0x40010000)
 #define DAC                                  ((void *)0x40007400)
+#define TIM2_IRQn                            ((int32_t)28)
 
-// 3. Константы Таймеров, Компаратора, ЦАП и GPIO
+// 3. Константы Таймеров, Компаратора, ЦАП и GPIO пинов
 #define TIM_ICPSC_DIV1                       ((uint32_t)0x00000000U)
 #define TIM_CHANNEL_1                        ((uint32_t)0x00000000U)
 #define TIM_CLOCKDIVISION_DIV1               ((uint32_t)0x00000000U)
@@ -57,6 +61,16 @@
 #define DAC_TRIGGER_NONE                     ((uint32_t)0x00000000U)
 #define DAC_OUTPUTBUFFER_ENABLE              ((uint32_t)0x00000000U)
 
+#define GPIO_PIN_0                           ((uint16_t)0x0001U)
+#define GPIO_PIN_1                           ((uint16_t)0x0002U)
+#define GPIO_PIN_2                           ((uint16_t)0x0004U)
+#define GPIO_PIN_3                           ((uint16_t)0x0008U)
+#define GPIO_PIN_4                           ((uint16_t)0x0010U)
+#define GPIO_PIN_5                           ((uint16_t)0x0020U)
+#define GPIO_PIN_6                           ((uint16_t)0x0040U)
+#define GPIO_PIN_7                           ((uint16_t)0x0080U)
+#define GPIO_PIN_ALL                         ((uint16_t)0xFFFFU)
+
 #define GPIO_MODE_INPUT                      ((uint32_t)0x00000000U)
 #define GPIO_MODE_OUTPUT_PP                  ((uint32_t)0x00000001U)
 #define GPIO_MODE_AF_PP                      ((uint32_t)0x00000002U)
@@ -74,7 +88,7 @@ typedef enum {
   HAL_TIMEOUT  = 0x03U
 } HAL_StatusTypeDef;
 
-// 4. Структуры данных
+// 4. Системные структуры данных
 typedef struct {
   uint32_t PLLState; uint32_t PLLSource; uint32_t PLLM; uint32_t PLLN; uint32_t PLLP; uint32_t PLLQ;
 } RCC_PLLInitTypeDef;
@@ -117,14 +131,10 @@ typedef struct {
 } DAC_HandleTypeDef;
 
 typedef struct {
-  uint32_t Pin;
-  uint32_t Mode;
-  uint32_t Pull;
-  uint32_t Speed;
-  uint32_t Alternate;
+  uint32_t Pin; uint32_t Mode; uint32_t Pull; uint32_t Speed; uint32_t Alternate;
 } GPIO_InitTypeDef;
 
-// 5. Все функции HAL и управления прерываниями (NVIC)
+// 5. Декларации функций библиотек HAL и NVIC прерываний
 HAL_StatusTypeDef HAL_Init(void);
 void HAL_Delay(uint32_t Delay);
 void HAL_GPIO_Init(void *GPIOx, GPIO_InitTypeDef *GPIO_Init);

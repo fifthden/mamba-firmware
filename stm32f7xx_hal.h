@@ -25,9 +25,13 @@
 #define __HAL_RCC_PWR_CLK_ENABLE()    do { } while(0)
 #define __HAL_PWR_VOLTAGESCALING_CONFIG(value) do { } while(0)
 
-// Константы для настройки таймеров STM32F722
-#define TIM_ICPSC_DIV1           ((uint32_t)0x00000000U)
-#define TIM_CHANNEL_1            ((uint32_t)0x00000000U)
+// Настройки таймеров STM32F722
+#define TIM_ICPSC_DIV1                       ((uint32_t)0x00000000U)
+#define TIM_CHANNEL_1                        ((uint32_t)0x00000000U)
+#define TIM_CLOCKDIVISION_DIV1               ((uint32_t)0x00000000U)
+#define TIM_CLOCKREVISION_DIV1               ((uint32_t)0x00000000U) // На случай опечатки в коде
+#define TIM_INPUTCHANNELPOLARITY_FALLING     ((uint32_t)0x00000002U)
+#define TIM_ICSELECTION_DIRECTTI             ((uint32_t)0x00000001U)
 
 typedef enum {
   HAL_OK       = 0x00U,
@@ -63,7 +67,6 @@ typedef struct {
   uint32_t APB2CLKDivider;
 } RCC_ClkInitTypeDef;
 
-// Структуры для конфигурации таймеров захвата сигнала дрона
 typedef struct {
   uint32_t ICPolarity;
   uint32_t ICSelection;
@@ -79,7 +82,8 @@ void HAL_RCC_OscConfig(RCC_OscInitTypeDef *RCC_OscInitStruct);
 void HAL_RCC_ClockConfig(RCC_ClkInitTypeDef *RCC_ClkInitStruct, uint32_t FLatency);
 HAL_StatusTypeDef HAL_PWREx_EnableOverDrive(void);
 
-// Функция инициализации каналов таймера
+// Функции для работы с аппаратными таймерами
+HAL_StatusTypeDef HAL_TIM_IC_Init(void *htim);
 HAL_StatusTypeDef HAL_TIM_IC_ConfigChannel(void *htim, TIM_IC_InitTypeDef *sConfig, uint32_t Channel);
 
 #endif

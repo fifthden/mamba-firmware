@@ -3,9 +3,11 @@
 
 #include "stm32f7xx.h"
 
-#define FLASH_LATENCY_7  ((uint32_t)0x00000007U)
-#define RCC_HCLK_DIV2    ((uint32_t)0x00008000U)
-#define RCC_HCLK_DIV4    ((uint32_t)0x00009000U)
+#define FLASH_LATENCY_7          ((uint32_t)0x00000007U)
+#define RCC_SYSCLK_DIV1          ((uint32_t)0x00000000U)
+#define RCC_HCLK_DIV2            ((uint32_t)0x00008000U)
+#define RCC_HCLK_DIV4            ((uint32_t)0x00009000U)
+#define RCC_SYSCLKSOURCE_PLLCLK  ((uint32_t)0x00000002U)
 
 typedef enum {
   HAL_OK       = 0x00U,

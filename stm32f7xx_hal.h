@@ -54,6 +54,8 @@
 
 #define DAC_CHANNEL_1                        ((uint32_t)0x00000000U)
 #define DAC_ALIGN_12B_R                      ((uint32_t)0x00000000U)
+#define DAC_TRIGGER_NONE                     ((uint32_t)0x00000000U)
+#define DAC_OUTPUTBUFFER_ENABLE              ((uint32_t)0x00000000U)
 
 typedef enum {
   HAL_OK       = 0x00U,
@@ -95,8 +97,10 @@ typedef struct {
   void* Instance; COMP_InitTypeDef Init;
 } COMP_HandleTypeDef;
 
+// Исправленные имена полей для структуры ЦАП дрона
 typedef struct {
-  uint32_t Trigger; uint32_t OutputBuffer;
+  uint32_t DAC_Trigger; 
+  uint32_t DAC_OutputBuffer;
 } DAC_ChannelConfTypeDef; 
 
 typedef struct {

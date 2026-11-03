@@ -37,10 +37,14 @@
 #define TIM2                                 ((void *)0x40000000)
 
 // Настройки встроенного компаратора платы Mamba
+#define COMP1                                ((void *)0x40010000)
 #define COMP_MODE_HIGHSPEED                  ((uint32_t)0x0000000CU)
 #define COMP_OUTPUTPOL_NONINVERTED           ((uint32_t)0x00000000U)
 #define COMP_HYSTERESIS_MEDIUM               ((uint32_t)0x00000002U)
 #define COMP_BLANKINGSR_NONE                 ((uint32_t)0x00000000U)
+#define COMP_INPUT_MINUS_DAC1_CH1            ((uint32_t)0x00000000U)
+#define COMP_INPUT_PLUS_IO1                  ((uint32_t)0x00000000U)
+#define COMP_OUTPUT_TIM2_IC1                 ((uint32_t)0x00000000U)
 
 typedef enum {
   HAL_OK       = 0x00U,
@@ -97,7 +101,6 @@ typedef struct {
   TIM_Base_InitTypeDef  Init;
 } TIM_HandleTypeDef;
 
-// Исправляем структуру: переименовываем поле в BlankingSR и добавляем OutputPol
 typedef struct {
   uint32_t InvertingInput;
   uint32_t NonInvertingInput;

@@ -14,13 +14,17 @@
 #define RCC_CLOCKTYPE_PCLK1      ((uint32_t)0x00000004U)
 #define RCC_CLOCKTYPE_PCLK2      ((uint32_t)0x00000008U)
 
-// Флаги настроек осциллятора платы Mamba
 #define RCC_OSCILLATORTYPE_HSE   ((uint32_t)0x00000001U)
 #define RCC_HSE_ON               ((uint32_t)0x00000020U)
 #define RCC_HSI_OFF              ((uint32_t)0x00000000U)
 #define RCC_PLL_ON               ((uint32_t)0x00000002U)
 #define RCC_PLLSOURCE_HSE        ((uint32_t)0x00000004U)
 #define RCC_PLLP_DIV2            ((uint32_t)0x00000002U)
+
+// Системные макросы питания для STM32F722
+#define PWR_REGULATOR_VOLTAGE_SCALE1  ((uint32_t)0x00000003U)
+#define __HAL_RCC_PWR_CLK_ENABLE()    do { } while(0)
+#define __HAL_PWR_VOLTAGESCALING_CONFIG(value) do { } while(0)
 
 typedef enum {
   HAL_OK       = 0x00U,

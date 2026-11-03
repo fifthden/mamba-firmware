@@ -36,8 +36,11 @@
 #define __HAL_RCC_TIM2_CLK_ENABLE()          do { } while(0)
 #define TIM2                                 ((void *)0x40000000)
 
-// Настройки встроенного компаратора
+// Настройки встроенного компаратора платы Mamba
 #define COMP_MODE_HIGHSPEED                  ((uint32_t)0x0000000CU)
+#define COMP_OUTPUTPOL_NONINVERTED           ((uint32_t)0x00000000U)
+#define COMP_HYSTERESIS_MEDIUM               ((uint32_t)0x00000002U)
+#define COMP_BLANKINGSR_NONE                 ((uint32_t)0x00000000U)
 
 typedef enum {
   HAL_OK       = 0x00U,
@@ -94,16 +97,17 @@ typedef struct {
   TIM_Base_InitTypeDef  Init;
 } TIM_HandleTypeDef;
 
-// Объявляем структуры для аппаратного компаратора
+// Исправляем структуру: переименовываем поле в BlankingSR и добавляем OutputPol
 typedef struct {
   uint32_t InvertingInput;
   uint32_t NonInvertingInput;
   uint32_t Output;
-  uint32_t BlankingSource;
+  uint32_t BlankingSR;       
   uint32_t Hysteresis;
   uint32_t Mode;
   uint32_t WindowMode;
   uint32_t TriggerMode;
+  uint32_t OutputPol;        
 } COMP_InitTypeDef;
 
 typedef struct {
@@ -122,7 +126,6 @@ HAL_StatusTypeDef HAL_PWREx_EnableOverDrive(void);
 HAL_StatusTypeDef HAL_TIM_IC_Init(TIM_HandleTypeDef *htim);
 HAL_StatusTypeDef HAL_TIM_IC_ConfigChannel(TIM_HandleTypeDef *htim, TIM_IC_InitTypeDef *sConfig, uint32_t Channel);
 
-// Функции компаратора
 HAL_StatusTypeDef HAL_COMP_Init(COMP_HandleTypeDef *hcomp);
 
 #endif

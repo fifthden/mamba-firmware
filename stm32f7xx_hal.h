@@ -14,6 +14,12 @@
 #define RCC_CLOCKTYPE_PCLK1      ((uint32_t)0x00000004U)
 #define RCC_CLOCKTYPE_PCLK2      ((uint32_t)0x00000008U)
 
+// Флаги настроек осциллятора платы Mamba
+#define RCC_OSCILLATORTYPE_HSE   ((uint32_t)0x00000001U)
+#define RCC_HSE_ON               ((uint32_t)0x00000020U)
+#define RCC_HSI_OFF              ((uint32_t)0x00000000U)
+#define RCC_PLL_ON               ((uint32_t)0x00000002U)
+#define RCC_PLLSOURCE_HSE        ((uint32_t)0x00000004U)
 #define RCC_PLLP_DIV2            ((uint32_t)0x00000002U)
 
 typedef enum {
@@ -23,7 +29,6 @@ typedef enum {
   HAL_TIMEOUT  = 0x03U
 } HAL_StatusTypeDef;
 
-// Детализируем внутреннюю структуру PLL процессора
 typedef struct {
   uint32_t PLLState;
   uint32_t PLLSource;
@@ -58,7 +63,6 @@ void HAL_Delay(uint32_t Delay);
 void HAL_RCC_OscConfig(RCC_OscInitTypeDef *RCC_OscInitStruct);
 void HAL_RCC_ClockConfig(RCC_ClkInitTypeDef *RCC_ClkInitStruct, uint32_t FLatency);
 
-// Добавляем функцию разгона питания микроконтроллера дрона
 HAL_StatusTypeDef HAL_PWREx_EnableOverDrive(void);
 
 #endif

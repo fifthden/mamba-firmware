@@ -5,6 +5,7 @@
 
 #define FLASH_LATENCY_7  ((uint32_t)0x00000007U)
 #define RCC_HCLK_DIV2    ((uint32_t)0x00008000U)
+#define RCC_HCLK_DIV4    ((uint32_t)0x00009000U)
 
 typedef enum {
   HAL_OK       = 0x00U,
@@ -13,7 +14,6 @@ typedef enum {
   HAL_TIMEOUT  = 0x03U
 } HAL_StatusTypeDef;
 
-// Объявляем базовые типы структур для настройки частоты тактования Mamba
 typedef struct {
   uint32_t OscillatorType;
   uint32_t HSEState;
